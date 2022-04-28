@@ -1,9 +1,13 @@
 
 const produtoNegocio = require('../negocio/produto_negocio');
 
-exports.listar = (req, res) => {
-    const lista = produtoNegocio.listar();
-    res.json(lista);
+exports.listar = async (req, res) => {
+    try{ 
+        const lista = await produtoNegocio.listar();
+        res.json(lista);
+    } catch (err) {
+        res.status(500).json({error: err});
+    }
 }
 
 exports.buscarPorId = (req, res) => {
