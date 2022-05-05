@@ -1,8 +1,5 @@
 const produtoRepository = require('../repository/produto_repository');
 
-let listaProdutos = [];
-let idAutoIncrement = 1;
-
 exports.listar = async () => {
     try { 
     const listaProdutos = await produtoRepository.listar();
@@ -10,26 +7,40 @@ exports.listar = async () => {
     } catch(err) { throw err; }
 }
 
-exports.buscarPorId = (id) => {
-    const produto = listaProdutos.find(
-        (produto) => produto.id == id
-    );
-
-    if(!produto){
-        throw new Error("Produto nao encontrado");
+exports.buscarPorId = async (id) => {
+    try {
+        const produto = await produtoRepository.buscarPorId(id);
+        if(!produto){
+            let erro = new Error();
+            erro.message = "Produto nao encontrado";
+            erro.status = 404;
+            throw erro;
+        }
+        else {
+            return produto;
+        }
     }
-    else {
-        return produto;
+    catch(err) {
+        throw err;
     }
 }
 
-exports.inserir = (produto) => {
+exports.inserir = async (produto) => {
     if(produto && produto.nome && produto.preco){
-        produto.id = idAutoIncrement++;
-        listaProdutos.push(produto);
-        return produto;
+        try{
+            const produtoInserido = await produtoRepository.inserir(produto);
+            return produtoInserido;
+        }
+        catch(err) {
+            throw err;  
+        }
+        
     }
     else {
-        throw new Error("Falta parametros de produto");
+        let erro = {}
+        erro.message = "Falta parametros de produto";
+        erro.status = 400;
+        throw erro;
     }
+
 }

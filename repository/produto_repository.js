@@ -20,10 +20,45 @@ exports.listar = async () => {
     catch (err) { throw err; }
 }
 
-exports.buscarPorId = (id) => {
+exports.buscarPorId = async (id) => {
+    const sql = "SELECT * FROM produtos WHERE id=$1";
+    const values = [id];
 
+    const cliente = new Client(conexao);
+    cliente.connect();
+
+    try{
+        const resultado = await cliente.query(sql, values);
+        cliente.end();
+        return(resultado.rows[0]);        
+    }
+    catch (err) {
+        let error = {};
+        error.name = err.name;
+        error.message = err.message;
+        error.status = 500; 
+        throw error; 
+    }
 }
 
-exports.inserir = (produto) => {
+exports.inserir = async (produto) => {
+    const sql = "INSERT INTO produtos(nome, preco) VALUES ($1, $2) RETURNING *";
+    const values = [produto.nome, produto.preco];
+
+    const cliente = new Client(conexao);
+    cliente.connect();
+    
+    try{
+        const resultado = await cliente.query(sql, values);
+        cliente.end();
+        return(resultado.rows[0]);
+    }
+    catch(err) {
+        let error = {};
+        error.name = err.name;
+        error.message = err.message;
+        error.status = 500; 
+        throw error; 
+    }
 
 }

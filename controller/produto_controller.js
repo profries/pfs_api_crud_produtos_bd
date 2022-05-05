@@ -10,26 +10,36 @@ exports.listar = async (req, res) => {
     }
 }
 
-exports.buscarPorId = (req, res) => {
+exports.buscarPorId = async (req, res) => {
     const id = req.params.id;
     try{
-        const produto = produtoNegocio.buscarPorId(id);
+        const produto = await produtoNegocio.buscarPorId(id);
         res.json(produto);                
     }
     catch (err) {
-        res.status(404).json({erro: err.msg});        
+        if(err.status) {
+            res.status(err.status).json(err);
+        }
+        else {
+            res.status(500).json({message: "Erro nao identificado"});            
+        }
     }
 }
 
-exports.inserir = (req, res) => {
+exports.inserir = async (req, res) => {
     const produto = req.body;
     
     try{ 
-        const produtoInserido = produtoNegocio.inserir(produto);
+        const produtoInserido = await produtoNegocio.inserir(produto);
         res.status(201).json(produto);
     }
     catch(err) {
-        res.status(400).json({erro: err.msg})
+        if(err.status) {
+            res.status(err.status).json(err);
+        }
+        else {
+            res.status(500).json({message: "Erro nao identificado"});            
+        }
     }   
 }
 
