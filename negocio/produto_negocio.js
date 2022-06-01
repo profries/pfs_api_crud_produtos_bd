@@ -44,3 +44,39 @@ exports.inserir = async (produto) => {
     }
 
 }
+
+exports.atualizar = async (id, produto) => {
+    try {
+        const produto = await produtoRepository.atualizar(id,produto);
+        if(!produto){
+            let erro = new Error();
+            erro.message = "Produto nao encontrado";
+            erro.status = 404;
+            throw erro;
+        }
+        else {
+            return produto;
+        }
+    }
+    catch(err) {
+        throw err;
+    }
+}
+
+exports.deletar = async (id) => {
+    try {
+        const produto = await produtoRepository.deletar(id);
+        if(!produto){
+            let erro = new Error();
+            erro.message = "Produto nao encontrado";
+            erro.status = 404;
+            throw erro;
+        }
+        else {
+            return produto;
+        }
+    }
+    catch(err) {
+        throw err;
+    }
+}

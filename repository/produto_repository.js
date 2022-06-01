@@ -60,5 +60,44 @@ exports.inserir = async (produto) => {
         error.status = 500; 
         throw error; 
     }
+}
 
+exports.atualizar = (id, produto) => {
+    const sql = "UPDATE produtos SET nome=$1, preco=$2 WHERE id=$3 RETURNING *";
+    const values = [produto.nome, produto.preco, id];
+
+    const cliente = new Client(conexao);
+    cliente.connect();
+    try{
+        const resultado = await cliente.query(sql, values);
+        cliente.end();
+        return(resultado.rows[0]);
+    }
+    catch (err) {
+        let error = {};
+        error.name = err.name;
+        error.message = err.message;
+        error.status = 500; 
+        throw error; 
+    }
+}
+
+exports.deletar = (id) => {
+    const sql = "DELETE FROM produto WHERE id=$1 RETURNING *";
+    const values = [id];
+
+    const cliente = new Client(conexao);
+    cliente.connect();
+    try{
+        const resultado = await cliente.query(sql, values);
+        cliente.end();
+        return(resultado.rows[0]);
+    }
+    catch (err) {
+        let error = {};
+        error.name = err.name;
+        error.message = err.message;
+        error.status = 500; 
+        throw error; 
+    }
 }
