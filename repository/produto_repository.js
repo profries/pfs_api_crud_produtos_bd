@@ -62,7 +62,7 @@ exports.inserir = async (produto) => {
     }
 }
 
-exports.atualizar = (id, produto) => {
+exports.atualizar = async (id, produto) => {
     const sql = "UPDATE produtos SET nome=$1, preco=$2 WHERE id=$3 RETURNING *";
     const values = [produto.nome, produto.preco, id];
 
@@ -82,7 +82,7 @@ exports.atualizar = (id, produto) => {
     }
 }
 
-exports.deletar = (id) => {
+exports.deletar = async (id) => {
     const sql = "DELETE FROM produto WHERE id=$1 RETURNING *";
     const values = [id];
 
